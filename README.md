@@ -115,15 +115,6 @@ structured codebase, extensible design, and domain-specific problem solving.
 
 ---
 
-## Roadmap
-
-* [ ] Add IPv6 support
-* [ ] Write to pcap file format for Wireshark import
-* [ ] Add ICMP parser
-* [ ] Optional: async runtime with Tokio
-
----
-
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
