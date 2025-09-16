@@ -128,5 +128,3 @@ structured codebase, extensible design, and domain-specific problem solving.
 
 This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
-
-Do you want me to also create a **GitHub Actions workflow (CI/CD)** so that the build badge I added actually works on your repo? That would push your repo even closer to “company-level polish.”
