@@ -5,34 +5,32 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/SheezaAlam/rust-packet-logger/rust.yml?branch=main)](https://github.com/SheezaAlam/rust-packet-logger/actions)
 [![Issues](https://img.shields.io/github/issues/SheezaAlam/rust-packet-logger)](https://github.com/SheezaAlam/rust-packet-logger/issues)
 
-A lightweight **network packet sniffer** written in Rust.
-It captures live traffic from a chosen network interface and decodes Ethernet, IPv4, TCP, and UDP headers.
+A lightweight **network packet sniffer** written in Rust.  
+It captures live traffic from a chosen network interface and decodes Ethernet, IPv4, TCP, and UDP headers.  
 Inspired by tools like `tcpdump` and `Wireshark`, this project demonstrates how to build real protocol analysis tools in Rust.
 
----
+
 
 ## Features
 
-* List available network interfaces (`--list`)
-* Capture packets from a chosen interface (`--iface <name>`)
-* Support for **Ethernet**, **IPv4**, **TCP**, and **UDP**
-* Human-readable logs with **timestamps** and **colored output**
-* CLI filters:
+- List available network interfaces (`--list`)
+- Capture packets from a chosen interface (`--iface <name>`)
+- Support for **Ethernet**, **IPv4**, **TCP**, and **UDP**
+- Human-readable logs with **timestamps** and **colored output**
+- CLI filters:
+  - `--tcp` or `--udp`
+  - `--port <number>`
+- Promiscuous mode support (`--promisc`)
+- Error handling with `anyhow` and structured logs with `tracing`
 
-  * `--tcp` or `--udp`
-  * `--port <number>`
-* Promiscuous mode support (`--promisc`)
-* Error handling with `anyhow` and structured logs with `tracing`
-
----
 
 ## Installation
 
 ### Prerequisites
 
-* Rust (1.80 or later)
-* Linux or macOS (Windows supported with Npcap)
-* Admin/root privileges to capture packets
+- Rust (1.80 or later)
+- Linux or macOS (Windows supported with Npcap)
+- Admin/root privileges to capture packets
 
 ### Clone and build
 
@@ -40,7 +38,7 @@ Inspired by tools like `tcpdump` and `Wireshark`, this project demonstrates how 
 git clone https://github.com/SheezaAlam/rust-packet-logger.git
 cd rust-packet-logger
 cargo build --release
-```
+````
 
 ---
 
@@ -86,7 +84,7 @@ Only UDP on port 53:
 cargo run -- --iface eth0 --udp --port 53
 ```
 
----
+
 
 ## Project Structure
 
@@ -95,8 +93,40 @@ src/
  ├─ main.rs        # Entry point
  ├─ cli.rs         # Command-line parsing
  ├─ capture.rs     # Packet capture logic
- ├─ parser.rs      # Ethernet/IP/TCP/UDP decoders
- └─ utils.rs       # Logging, formatting helpers
+ ├─ parser.rs      # Ethernet/IP/TCP/UDP decoders,Logging, formatting helpers
+ └─ test.rs        # unit test
+```
+
+---
+
+## Architecture
+
+```text
++------------------------+
+|  Command-line (clap)   |   --list, --iface, --tcp, --udp, --port, --promisc
++------------------------+
+             |
+             v
++------------------------+
+|   Packet Capture       |   (pnet::datalink::channel)
+|   capture.rs           |
++------------------------+
+             |
+             v
++------------------------+
+|   Packet Parser        |   parser.rs
+|  - Ethernet header     |
+|  - IPv4 header         |
+|  - TCP/UDP headers     |
++------------------------+
+             |
+             v
++------------------------+
+|   Logger & Output      |   utils.rs
+|  - chrono timestamps   |
+|  - colored output      |
+|  - tracing logs        |
++------------------------+
 ```
 
 ---
