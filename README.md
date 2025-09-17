@@ -4,15 +4,15 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/SheezaAlam/rust-packet-logger/rust.yml?branch=main)](https://github.com/SheezaAlam/rust-packet-logger/actions)
 [![Issues](https://img.shields.io/github/issues/SheezaAlam/rust-packet-logger)](https://github.com/SheezaAlam/rust-packet-logger/issues)
+[![Release](https://img.shields.io/badge/release-v0.1.0-lightgrey.svg)](https://github.com/SheezaAlam/rust-packet-logger/releases/tag/v0.1.0)
 
 ---
 
 ## Overview
 
-**Rust Packet Logger** is a high-performance **network packet sniffer** built in Rust.
-It captures live traffic from any network interface, parses Ethernet, IPv4, TCP, and UDP headers, and outputs structured, human-readable logs.
+**Rust Packet Logger** is a high-performance **network packet sniffer** built in Rust. It captures live traffic from any network interface, parses Ethernet, IPv4, TCP, and UDP headers, and outputs structured, human-readable logs.
 
-This project demonstrates **protocol-level analysis**, **system-level Rust programming**, and **network tool design**, bridging the gap between academic networking knowledge and real-world protocol development.
+It demonstrates **protocol-level analysis**, **system-level Rust programming**, and **network tool design**, bridging the gap between academic networking knowledge and real-world protocol development.
 
 ---
 
@@ -27,7 +27,8 @@ This project demonstrates **protocol-level analysis**, **system-level Rust progr
   * `--tcp` / `--udp`
   * `--port <number>`
 * Promiscuous mode support (`--promisc`)
-* Robust error handling with `anyhow` and structured logs with `tracing`
+* Robust error handling with `anyhow`
+* Structured logs with `tracing`
 
 ---
 
@@ -93,34 +94,97 @@ cargo run -- --iface eth0 --udp --port 53
 
 ---
 
-## Architecture
+## CLI Flags
+
+| Flag             | Description                           |
+| ---------------- | ------------------------------------- |
+| `--list`         | List all available network interfaces |
+| `--iface <name>` | Select interface for packet capture   |
+| `--tcp`          | Capture only TCP packets              |
+| `--udp`          | Capture only UDP packets              |
+| `--port <num>`   | Filter packets by specific port       |
+| `--promisc`      | Enable promiscuous mode               |
+
+---
+
+## Architecture 
+
+```text
+               ┌─────────────────────────────┐
+               │     Command-Line CLI        │
+               │   (clap: flags & filters)  │
+               └─────────────┬──────────────┘
+                             │
+                             ▼
+               ┌─────────────────────────────┐
+               │       Packet Capture        │
+               │  (pnet::datalink::channel) │
+               │          capture.rs         │
+               └─────────────┬──────────────┘
+                             │
+                             ▼
+               ┌─────────────────────────────┐
+               │       Packet Parser         │
+               │         parser.rs           │
+               │ - Ethernet Header           │
+               │ - IPv4 Header               │
+               │ - TCP / UDP Headers         │
+               └─────────────┬──────────────┘
+                             │
+                             ▼
+               ┌─────────────────────────────┐
+               │     Logger & Output         │
+               │         logger.rs           │
+               │ - Colored & timestamped logs│
+               │ - tracing structured logs   │
+               └─────────────┬──────────────┘
+                             │
+                             ▼
+               ┌─────────────────────────────┐
+               │ Unit & Integration Tests    │
+               │         tests.rs            │
+               └─────────────────────────────┘
+```
+
+---
+
+## Screenshots
+
+*(Add screenshots of the CLI in action and example logs)*
+
+---
+
+## Unit & Integration Tests
+
+Run all tests:
+
+```bash
+cargo test
+```
+
+Example:
+
+```rust
+#[test]
+fn parse_tcp_header() {
+    let packet = ...;
+    let header = parse_tcp(packet);
+    assert_eq!(header.source_port, 50500);
+}
+```
+
+---
+
+## Project Structure
 
 ```
-+------------------------+
-|  Command-line (clap)   | --list, --iface, --tcp/udp, --port, --promisc
-+------------------------+
-             |
-             v
-+------------------------+
-|   Packet Capture       | (pnet::datalink::channel)
-|   capture.rs           |
-+------------------------+
-             |
-             v
-+------------------------+
-|   Packet Parser        | parser.rs
-|  - Ethernet header     |
-|  - IPv4 header         |
-|  - TCP/UDP headers     |
-+------------------------+
-             |
-             v
-+------------------------+
-|   Logger & Output      | utils.rs
-|  - chrono timestamps   |
-|  - colored output      |
-|  - tracing logs        |
-+------------------------+
+src/
+ ├─ main.rs        # Entry point
+ ├─ cli.rs         # Command-line parsing
+ ├─ capture.rs     # Packet capture logic
+ ├─ parser.rs      # Header parsing and formatting
+ ├─ logger.rs      # Logging & output helpers
+ └─ tests.rs       # Unit & integration tests
 ```
 
 ---
@@ -137,32 +201,19 @@ This project demonstrates:
 
 ---
 
-## Project Structure
-
-```
-src/
- ├─ main.rs        # Entry point
- ├─ cli.rs         # Command-line parsing
- ├─ capture.rs     # Packet capture logic
- ├─ parser.rs      # Header parsing and formatting
- ├─ logger.rs      # Logging & output helpers
- └─ tests.rs       # Unit tests for packet parsing
-```
-
----
-
 ## Recommended Next Steps
 
-To elevate this project for **Level 3+ protocol developer showcase**:
-
 1. Implement **IPv6, ICMP, and TCP option parsing**
-2. Add **unit and integration tests** for packet parsing correctness
-3. Include **performance benchmarks** for high-throughput scenarios
-4. Add **multi-interface capture** and **real-time filtering**
+2. Add **performance benchmarks**
+3. Add **multi-interface capture** and **real-time filtering**
+4. Enhance **unit and integration tests** coverage
 
 ---
 
 ## License
 
-MIT License – see [LICENSE](./LICENSE) for details.
+MIT License – see [LICENSE](./LICENSE) for details
 
+---
+
+**Release v0.1.0** tagged on GitHub: [v0.1.0](https://github.com/SheezaAlam/rust-packet-logger/releases/tag/v0.1.0)
