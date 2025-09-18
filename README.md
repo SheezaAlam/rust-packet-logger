@@ -112,24 +112,24 @@ cargo run -- --iface eth0 --udp --port 53
 ```text
                ┌─────────────────────────────┐
                │     Command-Line CLI        │
-               │   (clap: flags & filters)  │
-               └─────────────┬──────────────┘
+               │   (clap: flags & filters)   │
+               └─────────────┬───────────── ─┘
                              │
                              ▼
                ┌─────────────────────────────┐
                │       Packet Capture        │
-               │  (pnet::datalink::channel) │
+               │  (pnet::datalink::channel)  │
                │          capture.rs         │
-               └─────────────┬──────────────┘
+               └─────────────┬────────────── ┘
                              │
                              ▼
                ┌─────────────────────────────┐
                │       Packet Parser         │
                │         parser.rs           │
-               │ - Ethernet Header           │
-               │ - IPv4 Header               │
-               │ - TCP / UDP Headers         │
-               └─────────────┬──────────────┘
+               │    - Ethernet Header        │
+               │    - IPv4 Header            │
+               │    - TCP / UDP Headers      │
+               └─────────────┬────────────── ┘
                              │
                              ▼
                ┌─────────────────────────────┐
@@ -137,7 +137,7 @@ cargo run -- --iface eth0 --udp --port 53
                │         logger.rs           │
                │ - Colored & timestamped logs│
                │ - tracing structured logs   │
-               └─────────────┬──────────────┘
+               └─────────────┬───────────── ─┘
                              │
                              ▼
                ┌─────────────────────────────┐
@@ -148,9 +148,6 @@ cargo run -- --iface eth0 --udp --port 53
 
 ---
 
-## Screenshots
-
-*(Add screenshots of the CLI in action and example logs)*
 
 ---
 
